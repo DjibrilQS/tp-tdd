@@ -2,6 +2,7 @@ package fr.esgi.cleancode.service;
 
 import fr.esgi.cleancode.database.InMemoryDatabase;
 import fr.esgi.cleancode.exception.InvalidDriverSocialSecurityNumberException;
+import fr.esgi.cleancode.model.DrivingLicence;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -55,4 +56,20 @@ public class DrivingLicenceCreationServiceTest {
                 () ->service.save(null)
         );
     }
+
+    @Test
+    @DisplayName("Verification number of points 12")
+    void should_create_with_12_points(){
+        DrivingLicence drivingLicence = DrivingLicence.builder().driverSocialSecurityNumber("123456789012345").build();
+        Assertions.assertEquals(12, drivingLicence.getAvailablePoints());
+
+    }
+
+    @Test
+    @DisplayName("Verification is security of social is valid")
+    void should_create_with_ssn(){
+        DrivingLicence drivingLicence = DrivingLicence.builder().driverSocialSecurityNumber("123456789012345").build();
+        Assertions.assertEquals("123456789012345", drivingLicence.getDriverSocialSecurityNumber());
+    }
+
 }
