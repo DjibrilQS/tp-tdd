@@ -7,12 +7,13 @@ import lombok.RequiredArgsConstructor;
 import java.util.Optional;
 import java.util.UUID;
 
+
 @RequiredArgsConstructor
 public class DrivingLicenceFinderService {
 
     private final InMemoryDatabase database;
 
     public Optional<DrivingLicence> findById(UUID drivingLicenceId) {
-
+        return Optional.empty();
     }
 }
