@@ -6,38 +6,53 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
 import java.util.UUID;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
 class DrivingLicenceFinderServiceTest {
     @Mock
-    private InMemoryDatabase database = InMemoryDatabase.getInstance();
+    private InMemoryDatabase database;
 
     @InjectMocks
-    private DrivingLicenceFinderService service = new DrivingLicenceFinderService(database);
+    private DrivingLicenceFinderService service;
 
-    DrivingLicence fakeDrivingLicence;
+    //DrivingLicence fakeDrivingLicence;
 
-    @BeforeEach
+    /*@BeforeEach
     void setUpDatabase() {
         DrivingLicenceCreationService creationService = new DrivingLicenceCreationService(database);
 
         this.fakeDrivingLicence = creationService.save("123456789012345");
-    }
+    }*/
 
     @Test
     @DisplayName("Should find a driving licence by id")
     void should_find() {
-        var foundDrivingLicence = service.findById(fakeDrivingLicence.getId());
-
-        Assertions.assertTrue(foundDrivingLicence.isPresent());
+        final var id = UUID.randomUUID();
+        final var drivingLicence = DrivingLicence.builder().id(id)
+                .driverSocialSecurityNumber("123456789012345")
+                .build();
+        when(database.findById(id)).thenReturn(Optional.of(drivingLicence));
+        final var actuel = service.findById(id);
+        assertThat(actuel).containsSame(drivingLicence);
+        verify(database).findById(id);
+        verifyNoMoreInteractions(database);
     }
 
     @Test
     @DisplayName("Should not find a driving licence by id")
     void should_not_find() {
+
         var foundDrivingLicence = service.findById(UUID.randomUUID());
 
         Assertions.assertTrue(foundDrivingLicence.isEmpty());
