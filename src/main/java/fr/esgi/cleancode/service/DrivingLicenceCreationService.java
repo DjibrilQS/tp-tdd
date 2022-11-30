@@ -14,10 +14,11 @@ public class DrivingLicenceCreationService {
     public DrivingLicence save(String socialSecurityNumber) throws InvalidDriverSocialSecurityNumberException{
         if(!isValidSocialNumber(socialSecurityNumber)) throw  new InvalidDriverSocialSecurityNumberException("Social Number is not good");
         DrivingLicenceIdGenerationService drivingLicenceIdGenerationService = new DrivingLicenceIdGenerationService();
-        return DrivingLicence.builder()
+        DrivingLicence drivingLicence =  DrivingLicence.builder()
                 .id(drivingLicenceIdGenerationService.generateNewDrivingLicenceId())
                 .driverSocialSecurityNumber(socialSecurityNumber)
                 .build();
+        return database.save(drivingLicence.getId(), drivingLicence);
     }
 
     private boolean isValidSocialNumber(String socialSecurityNumber){
