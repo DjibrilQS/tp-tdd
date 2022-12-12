@@ -33,8 +33,11 @@ public class DrivingLicenceCreationServiceTest {
                 .driverSocialSecurityNumber(socialNumber)
                 .build();
         when(service.save(socialNumber)).thenReturn(drivingLicence);
-        final var actuelDriving = service.save(socialNumber);
-        assertThat(actuelDriving.getDriverSocialSecurityNumber()).isEqualTo(actuelDriving.getDriverSocialSecurityNumber());
+        final var actualDriving = service.save(socialNumber);
+//        assertThat(actualDriving.getDriverSocialSecurityNumber())
+//                .isEqualTo(actualDriving.getDriverSocialSecurityNumber());
+        assertThat(actualDriving.getDriverSocialSecurityNumber())
+                .isEqualTo(drivingLicence.getDriverSocialSecurityNumber());
         verify(service).save(socialNumber);
         verifyNoMoreInteractions(service);
 

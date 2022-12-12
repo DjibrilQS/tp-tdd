@@ -47,7 +47,7 @@ class DrivingLicenceFinderServiceTest {
         final var  id = UUID.randomUUID();
        when(database.findById(id)).thenReturn(Optional.empty());
         final var actuel = service.findById(id);
-        assertThat(actuel.isEmpty()).isSameAs(true);
+        assertThat(actuel).isEmpty();
 
         verify(database).findById(id);
         verifyNoMoreInteractions(database);
