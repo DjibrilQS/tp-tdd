@@ -26,14 +26,6 @@ class DrivingLicenceFinderServiceTest {
     @InjectMocks
     private DrivingLicenceFinderService service;
 
-    //DrivingLicence fakeDrivingLicence;
-
-    /*@BeforeEach
-    void setUpDatabase() {
-        DrivingLicenceCreationService creationService = new DrivingLicenceCreationService(database);
-
-        this.fakeDrivingLicence = creationService.save("123456789012345");
-    }*/
 
     @Test
     @DisplayName("Should find a driving licence by id")
@@ -52,9 +44,12 @@ class DrivingLicenceFinderServiceTest {
     @Test
     @DisplayName("Should not find a driving licence by id")
     void should_not_find() {
+        final var  id = UUID.randomUUID();
+       when(database.findById(id)).thenReturn(Optional.empty());
+        final var actuel = service.findById(id);
+        assertThat(actuel.isEmpty()).isSameAs(true);
 
-        var foundDrivingLicence = service.findById(UUID.randomUUID());
-
-        Assertions.assertTrue(foundDrivingLicence.isEmpty());
+        verify(database).findById(id);
+        verifyNoMoreInteractions(database);
     }
 }

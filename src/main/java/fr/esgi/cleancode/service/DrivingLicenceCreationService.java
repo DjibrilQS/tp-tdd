@@ -18,7 +18,7 @@ public class DrivingLicenceCreationService {
                 .id(drivingLicenceIdGenerationService.generateNewDrivingLicenceId())
                 .driverSocialSecurityNumber(socialSecurityNumber)
                 .build();
-        return database.save(drivingLicence.getId(), drivingLicence);
+        return  database.save(drivingLicence.getId(), drivingLicence);
     }
 
     private boolean isValidSocialNumber(String socialSecurityNumber){
