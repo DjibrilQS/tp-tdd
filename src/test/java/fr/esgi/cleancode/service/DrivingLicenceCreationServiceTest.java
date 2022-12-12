@@ -20,6 +20,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class DrivingLicenceCreationServiceTest {
 
+
     @Mock
     private DrivingLicenceCreationService service ;
 
@@ -34,8 +35,6 @@ public class DrivingLicenceCreationServiceTest {
                 .build();
         when(service.save(socialNumber)).thenReturn(drivingLicence);
         final var actualDriving = service.save(socialNumber);
-//        assertThat(actualDriving.getDriverSocialSecurityNumber())
-//                .isEqualTo(actualDriving.getDriverSocialSecurityNumber());
         assertThat(actualDriving.getDriverSocialSecurityNumber())
                 .isEqualTo(drivingLicence.getDriverSocialSecurityNumber());
         verify(service).save(socialNumber);
@@ -102,6 +101,7 @@ public class DrivingLicenceCreationServiceTest {
         when(service.save(socialNumber)).thenReturn(drivingLicence);
         final var actuel = service.save(socialNumber);
         Assertions.assertEquals(actuel.getDriverSocialSecurityNumber(), drivingLicence.getDriverSocialSecurityNumber());
+        verifyNoMoreInteractions(service);
     }
 
 }
