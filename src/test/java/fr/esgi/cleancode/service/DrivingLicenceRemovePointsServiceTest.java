@@ -25,10 +25,10 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class DrivingLicenceRemovePointsServiceTest {
 
-    @InjectMocks
+    @Mock
     private InMemoryDatabase database;
 
-    @Mock
+    @InjectMocks
     private DrivingLicenceRemovePointsService service;
 
 
@@ -37,63 +37,57 @@ public class DrivingLicenceRemovePointsServiceTest {
     @Test
     @DisplayName("test removing points valid")
     void should_remove_points(){
-        final var id = UUID.randomUUID();
+        final  var id = UUID.randomUUID();
         final var drivingLicence = DrivingLicence.builder().id(id)
                 .driverSocialSecurityNumber("123456789012345")
                 .build();
-        database.save(id, drivingLicence);
-        final var drivingLicenceReturn = DrivingLicence.builder().id(id)
-                .driverSocialSecurityNumber("123456789012345").availablePoints(9)
-                .build();
-        when(service.removeDrivingPoints(3, id)).thenReturn(drivingLicenceReturn);
-        final var actuel = service.removeDrivingPoints(3, id);
-        assertThat(actuel.getAvailablePoints()).isEqualTo(drivingLicenceReturn.getAvailablePoints());
-        verify(service).removeDrivingPoints(3, id);
-        verifyNoMoreInteractions(service);
+        when(database.findById(id)).thenReturn(Optional.of(drivingLicence));
+        final  var actuel = service.removeDrivingPoints(3, id);
+        assertThat(actuel.getAvailablePoints()).isEqualTo(9);
+        verify(database).findById(id);
+        verifyNoMoreInteractions(database);
     }
 
     @Test
     @DisplayName("test removing points invalid")
     void should_not_remove_more_points(){
-        final var id = UUID.randomUUID();
+        final  var id = UUID.randomUUID();
         final var points = 13;
         final var drivingLicence = DrivingLicence.builder().id(id)
                 .driverSocialSecurityNumber("123456789012345")
                 .build();
-        database.save(id, drivingLicence);
-        when(service.removeDrivingPoints(points, id)).thenReturn(drivingLicence);
-        final var actuel = service.removeDrivingPoints(points, id);
-        assertThat(actuel.getAvailablePoints()).isEqualTo(drivingLicence.getAvailablePoints());
-        verify(service).removeDrivingPoints(13, id);
-        verifyNoMoreInteractions(service);
+        when(database.findById(id)).thenReturn(Optional.of(drivingLicence));
+        final  var actuel = service.removeDrivingPoints(points, id);
+        assertThat(actuel.getAvailablePoints()).isEqualTo(0);
+        verify(database).findById(id);
+        verifyNoMoreInteractions(database);
     }
 
     @Test
     @DisplayName("test removing negative points")
     void should_not_remove_any_points(){
-        final var id = UUID.randomUUID();
+        final  var id = UUID.randomUUID();
         final var points = -3;
         final var drivingLicence = DrivingLicence.builder().id(id)
                 .driverSocialSecurityNumber("123456789012345")
                 .build();
-        database.save(id, drivingLicence);
-        when(service.removeDrivingPoints(points, id)).thenReturn(drivingLicence);
-        final var actuel = service.removeDrivingPoints(points, id);
-        assertThat(actuel.getAvailablePoints()).isEqualTo(drivingLicence.getAvailablePoints());
-        verify(service).removeDrivingPoints(-3, id);
-        verifyNoMoreInteractions(service);
+        when(database.findById(id)).thenReturn(Optional.of(drivingLicence));
+        final  var actuel = service.removeDrivingPoints(points, id);
+        assertThat(actuel.getAvailablePoints()).isEqualTo(12);
+        verify(database).findById(id);
+        verifyNoMoreInteractions(database);
     }
 
     @Test
     @DisplayName("test no drivingLicence")
     void should_have_driving_licence(){
-        final var id = UUID.randomUUID();
-        final  var points = 3;
-        when(service.removeDrivingPoints(points, id)).thenThrow( new ResourceNotFoundException("Enter a driving licence"));
+        final  var id = UUID.randomUUID();
+        final var points = 10;
+        when(database.findById(id)).thenReturn(Optional.empty());
         assertThrows(ResourceNotFoundException.class ,
                 ()->service.removeDrivingPoints(points, id));
-        verify(service).removeDrivingPoints(points, id);
-        verifyNoMoreInteractions(service);
+        verify(database).findById(id);
+        verifyNoMoreInteractions(database);
     }
 
 
