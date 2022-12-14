@@ -13,9 +13,10 @@ public class DrivingLicenceCreationService {
 
     public DrivingLicence save(String socialSecurityNumber) throws InvalidDriverSocialSecurityNumberException{
         if(!isValidSocialNumber(socialSecurityNumber)) throw  new InvalidDriverSocialSecurityNumberException("Social Number is not good");
-        DrivingLicenceIdGenerationService drivingLicenceIdGenerationService = new DrivingLicenceIdGenerationService();
+        //DrivingLicenceIdGenerationService drivingLicenceIdGenerationService = new  DrivingLicenceIdGenerationService();
+        final var id = DrivingLicenceIdGenerationService.generateNewDrivingLicenceId();
         DrivingLicence drivingLicence =  DrivingLicence.builder()
-                .id(drivingLicenceIdGenerationService.generateNewDrivingLicenceId())
+                .id(id)
                 .driverSocialSecurityNumber(socialSecurityNumber)
                 .build();
         return  database.save(drivingLicence.getId(), drivingLicence);
